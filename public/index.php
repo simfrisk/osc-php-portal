@@ -25,9 +25,12 @@ set_error_handler(function ($severity, $message, $file, $line) {
     return true;
 });
 
+// OSC My Apps are always served over HTTPS on the stable app URL, so the
+// session cookie can safely require it.
 session_start([
     'cookie_httponly' => true,
     'cookie_samesite' => 'Lax',
+    'cookie_secure' => true,
 ]);
 
 $method = $_SERVER['REQUEST_METHOD'];
