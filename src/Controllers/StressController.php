@@ -94,6 +94,23 @@ class StressController
         ], JSON_PRETTY_PRINT);
     }
 
+    // No auth/CSRF, on purpose: used only to sweep upload sizes quickly on the
+    // throwaway stress app to find where the platform (ingress body limit) or
+    // PHP (upload_max_filesize/post_max_size) rejects a request first.
+    public static function upload(): void
+    {
+        header('Content-Type: application/json');
+        $result = [
+            'post_max_size' => ini_get('post_max_size'),
+            'upload_max_filesize' => ini_get('upload_max_filesize'),
+            'content_length_header' => $_SERVER['CONTENT_LENGTH'] ?? null,
+            'files' => $_FILES,
+            'post_is_empty_but_content_length_set' =>
+                empty($_POST) && empty($_FILES) && (int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0,
+        ];
+        echo json_encode($result, JSON_PRETTY_PRINT);
+    }
+
     // Deterministic memory_limit fatal: lowers the limit at runtime, then
     // allocates past it, to see whether PHP's own fatal error is visible
     // to the client and to get-my-app-logs.

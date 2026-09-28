@@ -121,6 +121,7 @@ if (str_starts_with($path, '/stress/')) {
         'ok' => 'ok',
         'ini' => 'iniReport',
         'memlimitfatal' => 'memoryLimitFatal',
+        'upload' => 'upload',
     ];
     if (isset($map[$action])) {
         \App\Controllers\StressController::{$map[$action]}();
