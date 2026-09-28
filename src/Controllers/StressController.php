@@ -88,6 +88,25 @@ class StressController
             'post_max_size' => ini_get('post_max_size'),
             'max_file_uploads' => ini_get('max_file_uploads'),
             'max_input_time' => ini_get('max_input_time'),
+            'log_errors' => ini_get('log_errors'),
+            'error_log' => ini_get('error_log'),
+            'display_errors' => ini_get('display_errors'),
         ], JSON_PRETTY_PRINT);
+    }
+
+    // Deterministic memory_limit fatal: lowers the limit at runtime, then
+    // allocates past it, to see whether PHP's own fatal error is visible
+    // to the client and to get-my-app-logs.
+    public static function memoryLimitFatal(): void
+    {
+        ini_set('memory_limit', '16M');
+        header('Content-Type: text/plain');
+        echo "memory_limit lowered to 16M, allocating past it...\n";
+        flush();
+        $chunks = [];
+        for ($i = 0; $i < 64; $i++) {
+            $chunks[] = str_repeat('x', 1024 * 1024);
+        }
+        echo "Should not reach here.\n";
     }
 }
