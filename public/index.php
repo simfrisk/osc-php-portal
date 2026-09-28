@@ -107,6 +107,25 @@ if ($path === '/status.json' && $method === 'GET') {
     exit;
 }
 
+// Stress-test only routes. This branch is deployed as a throwaway app
+// (phpstress), never on the real phpportal app.
+if (str_starts_with($path, '/stress/')) {
+    require __DIR__ . '/../src/Controllers/StressController.php';
+    $action = substr($path, strlen('/stress/'));
+    $map = [
+        'memory' => 'memory',
+        'cpu' => 'cpu',
+        'sleep' => 'sleep',
+        'fatal' => 'fatal',
+        'crash' => 'crash',
+        'ok' => 'ok',
+    ];
+    if (isset($map[$action])) {
+        \App\Controllers\StressController::{$map[$action]}();
+        exit;
+    }
+}
+
 // Pretty 404 for anything else.
 http_response_code(404);
 Views::layout('Not found', '<h1>404</h1><p>Page not found. Try <a href="/contacts">Contacts</a>.</p>');
