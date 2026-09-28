@@ -77,4 +77,17 @@ class StressController
         header('Content-Type: text/plain');
         echo "stress app ok, pid=" . getmypid() . "\n";
     }
+
+    public static function iniReport(): void
+    {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'memory_limit' => ini_get('memory_limit'),
+            'max_execution_time' => ini_get('max_execution_time'),
+            'upload_max_filesize' => ini_get('upload_max_filesize'),
+            'post_max_size' => ini_get('post_max_size'),
+            'max_file_uploads' => ini_get('max_file_uploads'),
+            'max_input_time' => ini_get('max_input_time'),
+        ], JSON_PRETTY_PRINT);
+    }
 }

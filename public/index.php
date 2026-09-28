@@ -119,6 +119,7 @@ if (str_starts_with($path, '/stress/')) {
         'fatal' => 'fatal',
         'crash' => 'crash',
         'ok' => 'ok',
+        'ini' => 'iniReport',
     ];
     if (isset($map[$action])) {
         \App\Controllers\StressController::{$map[$action]}();
