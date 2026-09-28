@@ -265,9 +265,16 @@ HTML;
             return;
         }
 
+        // pdo_pgsql returns bytea columns as a PHP stream resource, not a plain
+        // string, so the bytes have to be read out of the stream before printing.
+        $data = $row['data'];
+        if (is_resource($data)) {
+            $data = stream_get_contents($data);
+        }
+
         header('Content-Type: ' . $row['mime_type']);
         header('Content-Disposition: inline; filename="' . basename($row['filename']) . '"');
-        echo $row['data'];
+        echo $data;
     }
 
     private static function form(array $contact, string $action, string $submitLabel): string
